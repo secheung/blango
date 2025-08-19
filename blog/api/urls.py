@@ -5,8 +5,9 @@ import os
 
 from rest_framework.urlpatterns import format_suffix_patterns
 from rest_framework.authtoken import views
+from rest_framework.routers import DefaultRouter
 
-from blog.api.views import PostList, PostDetail, UserDetail
+from blog.api.views import PostViewSet, UserDetail, TagViewSet #, PostList, PostDetail
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -20,8 +21,8 @@ schema_view = get_schema_view(
 
 urlpatterns = [
   path("auth/", include("rest_framework.urls")),
-  path("posts/", PostList.as_view(), name="api_post_list"),
-  path("posts/<int:pk>", PostDetail.as_view(), name="api_post_list"),
+  #path("posts/", PostList.as_view(), name="api_post_list"),
+  #path("posts/<int:pk>", PostDetail.as_view(), name="api_post_list"),
   path("users/<str:email>", UserDetail.as_view(), name="api_user_detail"),
 ]
 
@@ -39,4 +40,12 @@ urlpatterns += [
     schema_view.with_ui("swagger", cache_timeout=0),
     name="schema-swagger-ui",
   ),
+]
+
+router = DefaultRouter()
+router.register("tags", TagViewSet)
+router.register("posts", PostViewSet)
+
+urlpatterns += [
+  path("",include(router.urls)),
 ]
